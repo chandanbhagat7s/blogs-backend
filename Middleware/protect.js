@@ -19,12 +19,8 @@ exports.protectRoute = runAsync(async (req, res, next) => {
 
     // we need to see weather the user is loged in or not 
     let token;
-    console.log("COOKIE IS ", req.cookie);
-    // console.log(token);
-    // console.log("cookies", req.cookies.jwt);
     if (req.cookies) {
         token = req.cookies.jwtBlog
-        console.log("req.cookies.jwt", req.cookies.jwtBlog);
     }
     // console.log(req.headers);
     if (req.headers.authorization) {

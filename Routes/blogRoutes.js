@@ -1,14 +1,23 @@
 const express = require('express');
 const { signUp, login } = require('../Controllers/userController');
-const { createblog } = require('../Controllers/templateController');
+const { createblog, uploadImages, resizeImage, getAllBlogs } = require('../Controllers/templateController');
 const { protectRoute } = require('../Middleware/protect');
 
 const blogRoutes = express.Router();
 
 
 
+
+
+
+
+
+
+
+
+blogRoutes.get('/readAllblogs', getAllBlogs)
 blogRoutes.use(protectRoute)
-blogRoutes.post('/createBlog', createblog)
+blogRoutes.post('/createBlog', uploadImages, resizeImage, createblog)
 blogRoutes.post('/hideBlog', createblog)
 // blogRoutes.post('/login', login)
 

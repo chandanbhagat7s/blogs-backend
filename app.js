@@ -7,9 +7,10 @@ const mongoose = require("mongoose");
 const userRouter = require('./Routes/userRoute');
 const globalErrorHandler = require('./Utils/globalErrorHandler');
 const blogRoutes = require('./Routes/blogRoutes');
+const cloudinary = require('cloudinary');
 
 dotenv.config({ path: './.config.env' });
-
+const cookieParser = require("cookie-parser")
 
 const PORT = process.env.PORT;
 
@@ -18,7 +19,7 @@ const PORT = process.env.PORT;
 // to get all everything 
 app.use(express.json())
 // app.use(morgan("dev"))
-// app.use(cookieParser())
+app.use(cookieParser())
 
 
 app.use(morgan('dev'))
@@ -34,6 +35,14 @@ mongoose.connect(process.env.DATABASE, {
 }).catch(e => {
     console.log("not connected");
 })
+
+
+cloudinary.v2.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET
+});
+
 
 
 app.use('/api/v1/blogs/', blogRoutes)

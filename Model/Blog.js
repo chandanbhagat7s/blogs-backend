@@ -12,6 +12,7 @@ const bcrypt = require('bcryptjs');
 const blogSchema = new mongoose.Schema({
     createdBy: {
         type: mongoose.mongo.ObjectId,
+        ref: 'User',
         required: [true, "must provide the information about creater of blog"]
     },
     blogName: {
@@ -40,6 +41,12 @@ const blogSchema = new mongoose.Schema({
     hidden: {
         type: Boolean,
         default: false
+    },
+    description: {
+        type: String
+    },
+    coverImage: {
+        type: String
     }
 
 
