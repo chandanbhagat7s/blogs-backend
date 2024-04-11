@@ -59,6 +59,33 @@ exports.getAllBlogs = runAsync(async (req, res, next) => {
 
 })
 
+
+
+
+
+exports.postNewCommentOnBlog = runAsync(async (req, res, next) => {
+    const { byUser, comment, id } = req.body;
+    const obj = {
+        byUser,
+        comment,
+    }
+    await Blog.findByIdAndUpdate(id, {
+        $push: { comments: obj }
+
+
+    });
+
+
+    res.status(200).send({
+        status: true,
+        message: "comment is posted admin will soon review it and verify it "
+    })
+
+
+
+})
+
+
 exports.hideBlog = runAsync(async (req, res, next) => {
 
     const blogs = await Blog.findByIdAndUpdate(req.body.id, {
@@ -92,6 +119,145 @@ exports.unhideTheBlog = runAsync(async (req, res, next) => {
 
 
 })
+
+
+
+
+
+exports.viewByAdminAndVerifyAll = runAsync(async (req, res, next) => {
+
+    // const blogs = await Blog.findByIdAndUpdate(req.body.Blogid, {
+    //     $push : {verifiedComment : req.body.comments}
+    // });
+
+    const blog = await Blog.findById(req.body.BlogId)
+
+    let initial = blog.verifiedComment
+    blog.verifiedComment = [...initial, req.body.toBeVerified];
+
+    await blog.save()
+
+
+
+
+
+    res.status(200).send({
+        status: true,
+        message: "Blog comments are now public"
+    })
+
+
+
+})
+
+
+
+
+exports.verifyTheComment = runAsync(async (req, res, next) => {
+    const blog = await Blog.findById(req.body.id);
+
+    const { byUser, comment } = req.body;
+    if (!byUser || !comment) {
+        return next(new appError("please provide the comment which to be approved", 400))
+    }
+    let verifiedComment;
+
+    blog.comments = blog.comments.map(el => {
+        let a = el.byUser == req.body.byUser
+        let b = el.comment == req.body.comment
+        if (a && b) {
+            verifiedComment = el;
+        } else {
+            return el;
+        }
+    })
+
+    blog.verifiedComment.push(verifiedComment);
+
+    await blog.save()
+
+
+    res.status(200).send({
+        status: true,
+        message: "Comment selected is approved"
+    })
+
+
+
+
+
+
+
+
+
+
+})
+
+
+
+
+exports.deleteSelectedComment = runAsync(async (req, res, next) => {
+
+    const blogs = await Blog.findByIdAndUpdate(req.body.id);
+    console.log("BLOG IS ", blogs);
+
+
+    let remaning = blogs.comments.map((el) => {
+        let a = el.byUser == req.body.byUser
+        let b = el.comment == req.body.comment
+        if (a && b) {
+
+        } else {
+            return el;
+        }
+
+    })
+    console.log("REMAINING COMMENTS", remaning);
+
+    blogs.comments = remaning.map(el => {
+        if (el) {
+            return el;
+        }
+    });
+
+    await blogs.save()
+
+
+
+
+    res.status(200).send({
+        status: true,
+        message: "Comment selected is deleted"
+    })
+
+
+
+})
+
+
+
+
+// to display all the comments to admin 
+
+// exports.getAllNewComments =runAsync(async (req, res, next) => {
+
+//     const blogs = await Blog.findByIdAndUpdate(req.body.id, {
+//         hidden: false
+//     });
+
+
+//     res.status(200).send({
+//         status: true,
+
+//     })
+
+
+
+// })
+
+
+
+
 
 
 

@@ -47,6 +47,12 @@ const blogSchema = new mongoose.Schema({
     },
     coverImage: {
         type: String
+    },
+    comments: {
+        type: [Object]
+    },
+    verifiedComment: {
+        type: [Object]
     }
 
 
